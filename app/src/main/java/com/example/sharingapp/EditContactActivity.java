@@ -2,7 +2,7 @@ package com.example.sharingapp;
 
 import android.content.Context;
 import android.content.Intent;
-import android.support.v7.app.AppCompatActivity;
+import androidx.appcompat.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.EditText;
@@ -57,8 +57,6 @@ public class EditContactActivity extends AppCompatActivity {
         String username_str = username.getText().toString();
         String id = contact.getId(); // Reuse the contact id
 
-        contact_list.deleteContact(contact);
-
         // Check that username is unique AND username is changed (Note: if username was not changed
         // then this should be fine, because it was already unique.)
         if (!contact_list.isUsernameAvailable(username_str) && !(contact.getUsername().equals(username_str))) {
@@ -68,6 +66,7 @@ public class EditContactActivity extends AppCompatActivity {
 
         Contact updated_contact = new Contact(username_str, email_str, id);
 
+        contact_list.deleteContact(contact);
         contact_list.addContact(updated_contact);
         contact_list.saveContacts(context);
 

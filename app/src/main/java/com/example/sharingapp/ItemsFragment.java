@@ -3,7 +3,7 @@ package com.example.sharingapp;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
-import android.support.v4.app.Fragment;
+import androidx.fragment.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -58,6 +58,7 @@ public abstract class ItemsFragment extends Fragment {
                 Item item = adapter.getItem(pos);
 
                 int meta_pos = item_list.getIndex(item);
+
                 if (meta_pos >= 0) {
 
                     Intent edit = new Intent(context, EditItemActivity.class);
@@ -74,5 +75,4 @@ public abstract class ItemsFragment extends Fragment {
      * @return selected_items
      */
     public abstract ArrayList<Item> filterItems();
-
 }

@@ -2,7 +2,7 @@ package com.example.sharingapp;
 
 import android.content.Context;
 import android.graphics.Bitmap;
-import android.support.v4.app.Fragment;
+import androidx.fragment.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -61,12 +61,12 @@ public class ItemAdapter extends ArrayAdapter<Item> {
         title_tv.setText(title);
         description_tv.setText(description);
 
-        // AllItemFragments: itemlist_item shows title, description and status
+        // AllItemFragments: itemlist item shows title, description and status
         if (fragment instanceof AllItemsFragment ) {
             status_tv.setText(status);
         }
 
-        // BorrowedItemsFragment/AvailableItemsFragment: itemlist_item shows title and description only
+        // BorrowedItemsFragment/AvailableItemsFragment: itemlist item shows title and description only
         if (fragment instanceof BorrowedItemsFragment || fragment instanceof AvailableItemsFragment) {
             status_tv.setVisibility(View.GONE);
         }

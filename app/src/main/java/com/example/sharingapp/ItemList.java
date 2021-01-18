@@ -52,7 +52,7 @@ public class ItemList {
             if (item.getId().equals(i.getId())) {
                 return pos;
             }
-            pos = pos+1;
+            pos = pos + 1;
         }
         return -1;
     }
@@ -67,7 +67,8 @@ public class ItemList {
             FileInputStream fis = context.openFileInput(FILENAME);
             InputStreamReader isr = new InputStreamReader(fis);
             Gson gson = new Gson();
-            Type listType = new TypeToken<ArrayList<Item>>() {}.getType();
+            Type listType = new TypeToken<ArrayList<Item>>() {
+            }.getType();
             items = gson.fromJson(isr, listType); // temporary
             fis.close();
         } catch (FileNotFoundException e) {
@@ -77,7 +78,7 @@ public class ItemList {
         }
     }
 
-    public void saveItems(Context context) {
+    public boolean saveItems(Context context) {
         try {
             FileOutputStream fos = context.openFileOutput(FILENAME, 0);
             OutputStreamWriter osw = new OutputStreamWriter(fos);
@@ -87,20 +88,14 @@ public class ItemList {
             fos.close();
         } catch (FileNotFoundException e) {
             e.printStackTrace();
+            return false;
         } catch (IOException e) {
             e.printStackTrace();
+            return false;
         }
+        return true;
     }
 
-    public ArrayList<Item> filterItemsByStatus(String status){
-        ArrayList<Item> selected_items = new ArrayList<>();
-        for (Item i: items) {
-            if (i.getStatus().equals(status)) {
-                selected_items.add(i);
-            }
-        }
-        return selected_items;
-    }
 
     public ArrayList<Contact> getActiveBorrowers() {
 
@@ -114,5 +109,16 @@ public class ItemList {
         return active_borrowers;
     }
 
+    public ArrayList<Item> filterItemsByStatus(String status){
+        ArrayList<Item> selected_items = new ArrayList<>();
+        for (Item i: items) {
+            if (i.getStatus().equals(status)) {
+                selected_items.add(i);
+            }
+        }
+        return selected_items;
+    }
 }
+
+
 

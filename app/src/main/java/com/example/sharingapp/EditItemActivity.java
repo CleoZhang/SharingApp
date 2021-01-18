@@ -4,7 +4,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.provider.MediaStore;
-import android.support.v7.app.AppCompatActivity;
+import androidx.appcompat.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.ArrayAdapter;
@@ -84,12 +84,9 @@ public class EditItemActivity extends AppCompatActivity{
         title.setText(item.getTitle());
         maker.setText(item.getMaker());
         description.setText(item.getDescription());
-
-        Dimensions dimensions = item.getDimensions();
-
-        length.setText(dimensions.getLength());
-        width.setText(dimensions.getWidth());
-        height.setText(dimensions.getHeight());
+        length.setText(item.getLength());
+        width.setText(item.getWidth());
+        height.setText(item.getHeight());
 
         String status_str = item.getStatus();
         if (status_str.equals("Borrowed")) {
@@ -129,9 +126,15 @@ public class EditItemActivity extends AppCompatActivity{
     }
 
     public void deleteItem(View view) {
-        item_list.deleteItem(item);
 
-        item_list.saveItems(context);
+        // Delete item
+        DeleteItemCommand delete_item_command = new DeleteItemCommand(item_list, item, context);
+        delete_item_command.execute();
+
+        boolean success = delete_item_command.isExecuted();
+        if (!success){
+            return;
+        }
 
         // End EditItemActivity
         Intent intent = new Intent(this, MainActivity.class);
@@ -152,8 +155,6 @@ public class EditItemActivity extends AppCompatActivity{
             String borrower_str = borrower_spinner.getSelectedItem().toString();
             contact = contact_list.getContactByUsername(borrower_str);
         }
-
-        Dimensions dimensions = new Dimensions(length_str, width_str, height_str);
 
         if (title_str.equals("")) {
             title.setError("Empty field!");
@@ -186,9 +187,8 @@ public class EditItemActivity extends AppCompatActivity{
         }
 
         String id = item.getId(); // Reuse the item id
-        item_list.deleteItem(item);
-
-        Item updated_item = new Item(title_str, maker_str, description_str, dimensions, image, id);
+        Item updated_item = new Item(title_str, maker_str, description_str, image, id );
+        updated_item.setDimensions(length_str, width_str, height_str);
 
         boolean checked = status.isChecked();
         if (!checked) {
@@ -196,9 +196,14 @@ public class EditItemActivity extends AppCompatActivity{
             updated_item.setBorrower(contact);
         }
 
-        item_list.addItem(updated_item);
+        // Edit item
+        EditItemCommand edit_item_command = new EditItemCommand(item_list, item, updated_item, context);
+        edit_item_command.execute();
 
-        item_list.saveItems(context);
+        boolean success = edit_item_command.isExecuted();
+        if (!success){
+            return;
+        }
 
         // End EditItemActivity
         Intent intent = new Intent(this, MainActivity.class);

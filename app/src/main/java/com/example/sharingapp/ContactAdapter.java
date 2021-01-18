@@ -11,7 +11,7 @@ import android.widget.TextView;
 import java.util.ArrayList;
 
 /**
- * ContactAdapter is responsible setting for what information is displayed in ListView entries.
+ * ContactAdapter is responsible for what information is displayed in ListView entries.
  */
 public class ContactAdapter extends ArrayAdapter<Contact> {
 

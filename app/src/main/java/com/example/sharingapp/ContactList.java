@@ -1,6 +1,5 @@
 package com.example.sharingapp;
 
-import java.util.ArrayList;
 import android.content.Context;
 
 import com.google.gson.Gson;
@@ -13,21 +12,22 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.OutputStreamWriter;
 import java.lang.reflect.Type;
+import java.util.ArrayList;
 
+/**
+ * ContactList class
+ */
 public class ContactList {
-    private ArrayList<Contact> contacts;
-    private String FILENAME;
+
+    private static ArrayList<Contact> contacts;
+    private String FILENAME = "contacts.sav";
 
     public ContactList() {
         contacts = new ArrayList<Contact>();
     }
 
-    public ContactList( ArrayList<Contact> contacts) {
-        this.contacts = contacts;
-    }
-
-    public void setContacts(ArrayList<Contact> contacts) {
-        this.contacts = contacts;
+    public void setContacts(ArrayList<Contact> contact_list) {
+        contacts = contact_list;
     }
 
     public ArrayList<Contact> getContacts() {
@@ -35,51 +35,56 @@ public class ContactList {
     }
 
     public ArrayList<String> getAllUsernames(){
-        ArrayList<String> result = new  ArrayList<String>();
-
-        for(int i = 0; i < this.contacts.size(); i ++){
-            result.add(this.contacts.get(i).getUsername());
-        }
-
-        return result;
+        ArrayList<String> username_list = new ArrayList<String>();
+        for (Contact u : contacts){
+            username_list.add(u.getUsername());
+            }
+        return username_list;
     }
 
-    public void addContact(Contact contact){
-        this.contacts.add(contact);
+    public void addContact(Contact contact) {
+        contacts.add(contact);
     }
 
-    public void deleteContact(Contact contact){
-        this.contacts.remove(contact);
+    public void deleteContact(Contact contact) {
+        contacts.remove(contact);
     }
 
-    public Contact getContact(int index){
-        return this.contacts.get(index);
+    public Contact getContact(int index) {
+        return contacts.get(index);
     }
 
-    public int getSize(){
-        return this.contacts.size();
-    }
-
-    public int getIndex(Contact contact){
-        return this.contacts.indexOf(contact);
-    }
-
-    public boolean hasContact(Contact contact){
-        boolean result = false;
-        if(this.contacts.contains(contact)){
-            result = true;
-        }
-
-        return result;
+    public int getSize() {
+        return contacts.size();
     }
 
     public Contact getContactByUsername(String username){
-        for (int i = 0; i < this.contacts.size(); i++){
-            if(this.contacts.get(i).getUsername() == username){
-                return this.contacts.get(i);
+        for (Contact c : contacts){
+            if (c.getUsername().equals(username)){
+                return c;
             }
         }
         return null;
+    }
+
+    public boolean hasContact(Contact contact) {
+        for (Contact c : contacts) {
+            if (contact.getId().equals(c.getId())) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    public int getIndex(Contact contact) {
+        int pos = 0;
+        for (Contact c : contacts) {
+            if (contact.getId().equals(c.getId())) {
+                return pos;
+            }
+            pos = pos+1;
+        }
+        return -1;
     }
 
     public boolean isUsernameAvailable(String username){
@@ -96,8 +101,9 @@ public class ContactList {
         try {
             FileInputStream fis = context.openFileInput(FILENAME);
             InputStreamReader isr = new InputStreamReader(fis);
+            Gson gson = new Gson();
             Type listType = new TypeToken<ArrayList<Contact>>() {}.getType();
-            contacts = new Gson().fromJson(isr, listType);
+            contacts = gson.fromJson(isr, listType); // temporary
             fis.close();
         } catch (FileNotFoundException e) {
             contacts = new ArrayList<Contact>();
@@ -106,8 +112,7 @@ public class ContactList {
         }
     }
 
-    public boolean saveContacts(Context context) {
-        boolean ret = false;
+    public void saveContacts(Context context) {
         try {
             FileOutputStream fos = context.openFileOutput(FILENAME, 0);
             OutputStreamWriter osw = new OutputStreamWriter(fos);
@@ -115,12 +120,10 @@ public class ContactList {
             gson.toJson(contacts, osw);
             osw.flush();
             fos.close();
-            ret = true;
         } catch (FileNotFoundException e) {
             e.printStackTrace();
         } catch (IOException e) {
             e.printStackTrace();
         }
-        return ret;
     }
 }

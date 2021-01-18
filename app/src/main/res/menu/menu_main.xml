@@ -4,5 +4,6 @@
     tools:context="com.example.sharingapp.MainActivity">
     <item
         android:id="@+id/contacts"
-        android:title="@string/contacts"/>
+        android:title="@string/contacts" />
 </menu>
+

@@ -4,7 +4,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.provider.MediaStore;
-import android.support.v7.app.AppCompatActivity;
+import androidx.appcompat.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.EditText;
@@ -87,11 +87,17 @@ public class AddItemActivity extends AppCompatActivity {
             return;
         }
 
-        Dimensions dimensions = new Dimensions(length_str, width_str, height_str);
-        Item item = new Item(title_str, maker_str, description_str, dimensions, image, null );
+        Item item = new Item(title_str, maker_str, description_str, image, null);
+        item.setDimensions(length_str, width_str, height_str);
 
-        item_list.addItem(item);
-        item_list.saveItems(context);
+        // Add item
+        AddItemCommand add_item_command = new AddItemCommand(item_list, item, context);
+        add_item_command.execute();
+
+        boolean success = add_item_command.isExecuted();
+        if (!success){
+            return;
+        }
 
         // End AddItemActivity
         Intent intent = new Intent(this, MainActivity.class);
